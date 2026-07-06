@@ -24,6 +24,8 @@ public class TaskService {
         return taskRepository.findAll();
     }
 
+
+
     public Task createTask(Task task) {
         return taskRepository.save(task);
     }
@@ -45,4 +47,7 @@ public class TaskService {
         return taskRepository.save(existing);
     }
 
+    public List<Task> findByCategory(Long categoryId) {
+        return taskRepository.findByCategoryId(categoryId);
+    }
 }

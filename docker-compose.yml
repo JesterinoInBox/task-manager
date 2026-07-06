@@ -1,0 +1,21 @@
+services:
+  application:
+    volumes:
+      - ./logs:/var/log/taskmanager
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: application
+    ports:
+      - "8080:8080"
+    depends_on:
+      - database
+  database:
+    image: postgres:18.0-alpine3.22
+    container_name: database
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: pass
+    ports:
+      - "5432:5432"

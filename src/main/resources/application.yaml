@@ -1,3 +1,21 @@
 spring:
   application:
-    name: task-manager
+    name: TaskManager
+  datasource:
+    url: jdbc:postgresql://database:5432/postgres
+    username: user
+    password: pass
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    enabled: true
+    operationsSorter: method
+  api-docs:
+    path: /api-docs
+    enabled: true
