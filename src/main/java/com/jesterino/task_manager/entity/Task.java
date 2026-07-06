@@ -17,5 +17,13 @@ public class Task {
     @Size(max = 100, message = "Title must be less than 100 characters")
     private String title;
 
+    @ManyToOne
+    @JoinColumn(name = "category_id")
+    private Category category;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
     private boolean completed;
 }
