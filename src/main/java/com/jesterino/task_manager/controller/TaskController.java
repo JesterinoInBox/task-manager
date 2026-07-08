@@ -1,6 +1,7 @@
 package com.jesterino.task_manager.controller;
 
 import com.jesterino.task_manager.entity.Task;
+import com.jesterino.task_manager.entity.TaskStatus;
 import com.jesterino.task_manager.service.TaskService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -51,5 +52,11 @@ public class TaskController {
     @PutMapping("/{id}")
     public ResponseEntity<Task> updateTask(@Valid @RequestBody Task updatedTask, @PathVariable Long id) {
         return ResponseEntity.ok(taskService.updateTask(updatedTask, id));
+    }
+
+    @Operation(method = "Возвращает задачу по её статусу")
+    @GetMapping()
+    public ResponseEntity<List<Task>> findTaskByStatus(@RequestParam TaskStatus taskStatus){
+        return ResponseEntity.ok(taskService.findByStatus(taskStatus));
     }
 }

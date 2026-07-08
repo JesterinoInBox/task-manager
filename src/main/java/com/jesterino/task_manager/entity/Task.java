@@ -3,13 +3,18 @@ package com.jesterino.task_manager.entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
-import lombok.Data;
+import lombok.*;
 
 @Entity
 @Table(name = "tasks")
-@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Task {
     @Id
+    @EqualsAndHashCode.Include
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
@@ -25,5 +30,7 @@ public class Task {
     @JoinColumn(name = "user_id")
     private User user;
 
-    private boolean completed;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status")
+    private TaskStatus taskStatus;
 }

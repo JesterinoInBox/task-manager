@@ -1,7 +1,8 @@
 package com.jesterino.task_manager.service;
 
-import com.jesterino.task_manager.ResourceNotFoundException;
+import com.jesterino.task_manager.Exception.ResourceNotFoundException;
 import com.jesterino.task_manager.entity.Task;
+import com.jesterino.task_manager.entity.TaskStatus;
 import com.jesterino.task_manager.repository.TaskRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -41,7 +42,7 @@ public class TaskService {
         Task existing = taskRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Task with id " + id +" not found"));
         existing.setTitle(updatedTask.getTitle());
-        existing.setCompleted(updatedTask.isCompleted());
+        existing.setTaskStatus(updatedTask.getTaskStatus());
         existing.setCategory(updatedTask.getCategory());
         existing.setUser(updatedTask.getUser());
         return taskRepository.save(existing);
@@ -49,5 +50,9 @@ public class TaskService {
 
     public List<Task> findByCategory(Long categoryId) {
         return taskRepository.findByCategoryId(categoryId);
+    }
+
+    public List<Task> findByStatus(TaskStatus taskStatus) {
+        return taskRepository.findByTaskStatus(taskStatus);
     }
 }

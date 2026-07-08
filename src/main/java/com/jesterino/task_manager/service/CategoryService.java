@@ -1,6 +1,6 @@
 package com.jesterino.task_manager.service;
 
-import com.jesterino.task_manager.ResourceNotFoundException;
+import com.jesterino.task_manager.Exception.ResourceNotFoundException;
 import com.jesterino.task_manager.entity.Category;
 import com.jesterino.task_manager.repository.CategoryRepository;
 import lombok.RequiredArgsConstructor;
