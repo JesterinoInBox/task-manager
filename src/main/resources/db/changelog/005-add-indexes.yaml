@@ -1,0 +1,29 @@
+databaseChangeLog:
+  - changeSet:
+      id: 005-add-indexes
+      author: jesterino
+
+      changes:
+        - createIndex:
+            tableName: tasks
+            indexName: idx_tasks_user
+
+            columns:
+              - column:
+                  name: user_id
+
+        - createIndex:
+            tableName: tasks
+            indexName: idx_tasks_category
+
+            columns:
+              - column:
+                  name: category_id
+
+        - createIndex:
+            tableName: tasks
+            indexName: idx_tasks_status
+
+            columns:
+              - column:
+                  name: status

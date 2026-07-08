@@ -1,0 +1,15 @@
+databaseChangeLog:
+  - changeSet:
+      id: 004-add-unique-constraints
+      author: jesterino
+
+      changes:
+        - addUniqueConstraint:
+            tableName: users
+            columnNames: name
+            constraintName: uk_user_name
+
+        - addUniqueConstraint:
+            tableName: categories
+            columnNames: category_name
+            constraintName: uk_category_name

@@ -1,0 +1,22 @@
+databaseChangeLog:
+  - changeSet:
+      id: 001-create-users
+      author: jesterino
+
+      changes:
+        - createTable:
+            tableName: users
+
+            columns:
+              - column:
+                  name: id
+                  type: BIGSERIAL
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+
+              - column:
+                  name: name
+                  type: VARCHAR(32)
+                  constraints:
+                    nullable: false

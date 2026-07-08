@@ -1,0 +1,15 @@
+databaseChangeLog:
+  - include:
+      file: changelog/001-create-users.yaml
+
+  - include:
+      file: changelog/002-create-categories.yaml
+
+  - include:
+      file: changelog/003-create-tasks.yaml
+
+  - include:
+      file: changelog/004-add-unique-constraints.yaml
+
+  - include:
+      file: changelog/005-add-indexes.yaml
