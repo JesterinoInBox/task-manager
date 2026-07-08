@@ -20,6 +20,7 @@ public class User {
 
     @NotBlank(message = "Name is mandatory")
     @Size(max = 32, message = "Name must be less than 32 characters")
+    @Column(nullable = false, unique = true)
     private String name;
 
 }

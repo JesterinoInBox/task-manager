@@ -20,6 +20,7 @@ public class Category {
 
     @NotBlank(message = "Name is mandatory")
     @Size(max = 100, message = "Name must be less than 100 characters")
+    @Column(nullable = false, unique = true)
     private String categoryName;
 
 }

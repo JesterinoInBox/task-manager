@@ -1,50 +1,83 @@
 package com.jesterino.task_manager.controller;
 
-import com.jesterino.task_manager.entity.Category;
+import com.jesterino.task_manager.dto.categoryDto.CategoryCreateDto;
+import com.jesterino.task_manager.dto.categoryDto.CategoryResponseDto;
+import com.jesterino.task_manager.dto.categoryDto.CategoryUpdateDto;
 import com.jesterino.task_manager.service.CategoryService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Tag(name = "CategoryController")
 @RestController
 @RequestMapping("/api/categories")
 @RequiredArgsConstructor
+@Tag(name = "Category Controller", description = "API для работы с категориями")
 public class CategoryController {
+
     private final CategoryService categoryService;
 
-    @Operation(method = "Возвращает все категории")
+    @Operation(summary = "Получить все категории")
+    @ApiResponse(responseCode = "200", description = "Список категорий")
     @GetMapping
-    public ResponseEntity<List<Category>> getAllCategories() {
+    public ResponseEntity<List<CategoryResponseDto>> getAll() {
         return ResponseEntity.ok(categoryService.findAll());
     }
 
-    @Operation(method = "Возвращает категорию по id")
+    @Operation(summary = "Получить категорию по id")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Категория найдена"),
+            @ApiResponse(responseCode = "404", description = "Категория не найдена", content = @Content)
+    })
     @GetMapping("/{id}")
-    public ResponseEntity<Category> getCategoryById(@PathVariable Long id) {
+    public ResponseEntity<CategoryResponseDto> getById(@PathVariable Long id) {
         return ResponseEntity.ok(categoryService.findById(id));
     }
 
-    @Operation(method = "Создает категорию")
+    @Operation(summary = "Создать категорию")
+    @ApiResponses({
+            @ApiResponse(responseCode = "201", description = "Категория создана"),
+            @ApiResponse(responseCode = "409", description = "Категория уже существует", content = @Content)
+    })
     @PostMapping
-    public ResponseEntity<Category> createCategory(@Valid @RequestBody Category category) {
-        return ResponseEntity.ok(categoryService.createCategory(category));
+    public ResponseEntity<CategoryResponseDto> create(
+            @Valid @RequestBody CategoryCreateDto dto) {
+
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(categoryService.createCategory(dto));
     }
 
-    @Operation(method = "Удаляет категорию")
-    @DeleteMapping("/{id}")
-    public void deleteCategory(@PathVariable Long id) {
-        categoryService.deleteCategory(id);
-    }
-
-    @Operation(method = "Обновляет категорию")
+    @Operation(summary = "Обновить категорию")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Категория обновлена"),
+            @ApiResponse(responseCode = "404", description = "Категория не найдена", content = @Content)
+    })
     @PutMapping("/{id}")
-    public ResponseEntity<Category> updateCategory(@Valid @RequestBody Category updatedCategory, @PathVariable Long id) {
-        return ResponseEntity.ok(categoryService.updateCategory(updatedCategory, id));
+    public ResponseEntity<CategoryResponseDto> update(
+            @PathVariable Long id,
+            @Valid @RequestBody CategoryUpdateDto dto) {
+
+        return ResponseEntity.ok(categoryService.updateCategory(id, dto));
+    }
+
+    @Operation(summary = "Удалить категорию")
+    @ApiResponses({
+            @ApiResponse(responseCode = "204", description = "Категория удалена"),
+            @ApiResponse(responseCode = "404", description = "Категория не найдена", content = @Content)
+    })
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+
+        categoryService.deleteCategory(id);
+
+        return ResponseEntity.noContent().build();
     }
 }
