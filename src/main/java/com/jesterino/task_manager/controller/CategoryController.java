@@ -1,8 +1,8 @@
 package com.jesterino.task_manager.controller;
 
-import com.jesterino.task_manager.dto.categoryDto.CategoryCreateDto;
-import com.jesterino.task_manager.dto.categoryDto.CategoryResponseDto;
-import com.jesterino.task_manager.dto.categoryDto.CategoryUpdateDto;
+import com.jesterino.task_manager.dto.category.CategoryCreateDto;
+import com.jesterino.task_manager.dto.category.CategoryResponseDto;
+import com.jesterino.task_manager.dto.category.CategoryUpdateDto;
 import com.jesterino.task_manager.service.CategoryService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;

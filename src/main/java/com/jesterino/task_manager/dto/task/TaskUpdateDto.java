@@ -1,4 +1,4 @@
-package com.jesterino.task_manager.dto.taskDto;
+package com.jesterino.task_manager.dto.task;
 
 import com.jesterino.task_manager.entity.TaskStatus;
 

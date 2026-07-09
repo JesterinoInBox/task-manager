@@ -1,8 +1,8 @@
 package com.jesterino.task_manager.service;
 
-import com.jesterino.task_manager.dto.taskDto.TaskCreateDto;
-import com.jesterino.task_manager.dto.taskDto.TaskResponseDto;
-import com.jesterino.task_manager.dto.taskDto.TaskUpdateDto;
+import com.jesterino.task_manager.dto.task.TaskCreateDto;
+import com.jesterino.task_manager.dto.task.TaskResponseDto;
+import com.jesterino.task_manager.dto.task.TaskUpdateDto;
 import com.jesterino.task_manager.entity.Category;
 import com.jesterino.task_manager.entity.Task;
 import com.jesterino.task_manager.entity.TaskStatus;
@@ -14,6 +14,10 @@ import com.jesterino.task_manager.repository.TaskRepository;
 import com.jesterino.task_manager.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -28,6 +32,7 @@ public class TaskService {
     private final CategoryRepository categoryRepository;
     private final TaskMapper taskMapper;
 
+    @Cacheable(value = "tasks", key = "#id")
     public TaskResponseDto findById(Long id) {
         Task task = taskRepository.findById(id)
                 .orElseThrow(() ->
@@ -36,6 +41,14 @@ public class TaskService {
         return taskMapper.toDto(task);
     }
 
+    @Caching(
+            put = {
+                    @CachePut(value = "tasks")
+            },
+            evict = {
+                    @CacheEvict(value = "tasksList", allEntries = true)
+            }
+    )
     public List<TaskResponseDto> findAll() {
         return taskRepository.findAll()
                 .stream()
@@ -43,6 +56,7 @@ public class TaskService {
                 .toList();
     }
 
+    @CacheEvict(value = "tasksList", allEntries = true)
     public TaskResponseDto createTask(TaskCreateDto dto) {
 
         log.info("Creating task '{}'", dto.title());
@@ -65,6 +79,7 @@ public class TaskService {
         return taskMapper.toDto(savedTask);
     }
 
+    @CachePut(value = "tasks", key = "#id")
     public TaskResponseDto updateTask(Long id, TaskUpdateDto dto) {
 
         Task task = taskRepository.findById(id)
@@ -80,6 +95,12 @@ public class TaskService {
         return taskMapper.toDto(updatedTask);
     }
 
+    @Caching(
+            evict = {
+                    @CacheEvict(value = "tasks", key = "#id"),
+                    @CacheEvict(value = "tasksList", allEntries = true)
+            }
+    )
     public void deleteTask(Long id) {
 
         if (!taskRepository.existsById(id)) {
@@ -91,6 +112,7 @@ public class TaskService {
         log.info("Task {} deleted", id);
     }
 
+    @Cacheable(value = "tasksByCategory", key = "#categoryId")
     public List<TaskResponseDto> findByCategory(Long categoryId) {
 
         return taskRepository.findByCategoryId(categoryId)
@@ -99,6 +121,7 @@ public class TaskService {
                 .toList();
     }
 
+    @Cacheable(value = "tasksByStatus", key = "#status")
     public List<TaskResponseDto> findByStatus(TaskStatus status) {
 
         return taskRepository.findByTaskStatus(status)

@@ -1,8 +1,8 @@
 package com.jesterino.task_manager.controller;
 
-import com.jesterino.task_manager.dto.userDto.UserCreateDto;
-import com.jesterino.task_manager.dto.userDto.UserResponseDto;
-import com.jesterino.task_manager.dto.userDto.UserUpdateDto;
+import com.jesterino.task_manager.dto.user.UserCreateDto;
+import com.jesterino.task_manager.dto.user.UserResponseDto;
+import com.jesterino.task_manager.dto.user.UserUpdateDto;
 import com.jesterino.task_manager.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;

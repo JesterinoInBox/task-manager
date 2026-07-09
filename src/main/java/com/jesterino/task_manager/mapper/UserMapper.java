@@ -1,8 +1,8 @@
 package com.jesterino.task_manager.mapper;
 
-import com.jesterino.task_manager.dto.userDto.UserCreateDto;
-import com.jesterino.task_manager.dto.userDto.UserResponseDto;
-import com.jesterino.task_manager.dto.userDto.UserUpdateDto;
+import com.jesterino.task_manager.dto.user.UserCreateDto;
+import com.jesterino.task_manager.dto.user.UserResponseDto;
+import com.jesterino.task_manager.dto.user.UserUpdateDto;
 import com.jesterino.task_manager.entity.User;
 import org.springframework.stereotype.Component;
 

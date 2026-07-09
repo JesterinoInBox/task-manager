@@ -1,8 +1,8 @@
 package com.jesterino.task_manager.controller;
 
-import com.jesterino.task_manager.dto.taskDto.TaskCreateDto;
-import com.jesterino.task_manager.dto.taskDto.TaskResponseDto;
-import com.jesterino.task_manager.dto.taskDto.TaskUpdateDto;
+import com.jesterino.task_manager.dto.task.TaskCreateDto;
+import com.jesterino.task_manager.dto.task.TaskResponseDto;
+import com.jesterino.task_manager.dto.task.TaskUpdateDto;
 import com.jesterino.task_manager.entity.TaskStatus;
 import com.jesterino.task_manager.service.TaskService;
 import io.swagger.v3.oas.annotations.Operation;
