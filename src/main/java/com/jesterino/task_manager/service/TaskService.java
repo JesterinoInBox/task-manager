@@ -7,7 +7,9 @@ import com.jesterino.task_manager.entity.Category;
 import com.jesterino.task_manager.entity.Task;
 import com.jesterino.task_manager.entity.TaskStatus;
 import com.jesterino.task_manager.entity.User;
+import com.jesterino.task_manager.event.TaskCreatedEvent;
 import com.jesterino.task_manager.exception.ResourceNotFoundException;
+import com.jesterino.task_manager.kafka.TaskEventProducer;
 import com.jesterino.task_manager.mapper.TaskMapper;
 import com.jesterino.task_manager.repository.CategoryRepository;
 import com.jesterino.task_manager.repository.TaskRepository;
@@ -31,6 +33,7 @@ public class TaskService {
     private final UserRepository userRepository;
     private final CategoryRepository categoryRepository;
     private final TaskMapper taskMapper;
+    private final TaskEventProducer producer;
 
     @Cacheable(value = "tasks", key = "#id")
     public TaskResponseDto findById(Long id) {
@@ -75,6 +78,17 @@ public class TaskService {
 
         Task savedTask = taskRepository.save(task);
         log.info("Task {} created successfully", savedTask.getId());
+
+        producer.sendTaskCreated(
+                new TaskCreatedEvent(
+                        savedTask.getId(),
+                        savedTask.getTitle(),
+                        savedTask.getUser().getId(),
+                        savedTask.getCategory().getId(),
+                        savedTask.getTaskStatus().name()
+                )
+        );
+
 
         return taskMapper.toDto(savedTask);
     }
