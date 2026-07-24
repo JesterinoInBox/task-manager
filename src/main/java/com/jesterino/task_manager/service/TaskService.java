@@ -83,8 +83,8 @@ public class TaskService {
                 new TaskCreatedEvent(
                         savedTask.getId(),
                         savedTask.getTitle(),
-                        savedTask.getUser().getId(),
-                        savedTask.getCategory().getId(),
+                        savedTask.getUser().getName(),
+                        savedTask.getCategory().getCategoryName(),
                         savedTask.getTaskStatus().name()
                 )
         );
