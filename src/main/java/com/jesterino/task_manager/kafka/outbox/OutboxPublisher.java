@@ -1,5 +1,6 @@
 package com.jesterino.task_manager.kafka.outbox;
 
+import com.jesterino.task_manager.kafka.event.TaskCreatedEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -14,9 +15,7 @@ public class OutboxPublisher {
 
     private final OutboxRepository repository;
 
-    private final KafkaTemplate<String,String> kafka;
-
-
+    private final KafkaTemplate<String, TaskCreatedEvent> kafka;
 
     @Scheduled(fixedDelay = 5000)
     public void publish(){
@@ -25,12 +24,17 @@ public class OutboxPublisher {
 
         for(var event : events){
 
-            kafka.send(
-                    "task-events",
-                    event.getPayload()
-            );
+            kafka.send("task-events", event.getPayload())
+                    .whenComplete((result, ex) -> {
 
-            repository.delete(event);
+                        if(ex == null){
+                            repository.delete(event);
+                        }
+                        else {
+                            log.error("Failed sending event", ex);
+                        }
+
+                    });
 
             log.info(
                     "Event {} sent",

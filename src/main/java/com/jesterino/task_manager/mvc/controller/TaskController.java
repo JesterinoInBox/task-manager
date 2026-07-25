@@ -13,6 +13,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -30,8 +32,21 @@ public class TaskController {
     @Operation(summary = "Получить все задачи")
     @ApiResponse(responseCode = "200", description = "Список задач")
     @GetMapping
-    public ResponseEntity<List<TaskResponseDto>> getAll() {
-        return ResponseEntity.ok(taskService.findAll());
+    public ResponseEntity<Page<TaskResponseDto>> getAll(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(defaultValue = "ASC") Sort.Direction direction
+    ) {
+        return ResponseEntity.ok(
+                taskService.findAll(page, size, sortBy, direction)
+        );
+    }
+    @Operation(summary = "Получить все задачи пользователя")
+    @ApiResponse(responseCode = "200", description = "Список задач")
+    @GetMapping("/getAllByUser/{userId}")
+    public ResponseEntity<List<TaskResponseDto>> getAllByUser(@PathVariable Long userId) {
+        return ResponseEntity.ok(taskService.findAllByUser(userId));
     }
 
     @Operation(summary = "Получить задачу по id")

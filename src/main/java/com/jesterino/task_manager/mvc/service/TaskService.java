@@ -22,17 +22,16 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.event.TransactionalEventListener;
-import tools.jackson.databind.ObjectMapper;
 
 import java.time.Instant;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
-
-import static org.springframework.transaction.event.TransactionPhase.AFTER_COMMIT;
 
 @Slf4j
 @Service
@@ -43,7 +42,6 @@ public class TaskService {
     private final UserRepository userRepository;
     private final CategoryRepository categoryRepository;
     private final TaskMapper taskMapper;
-    private final ObjectMapper objectMapper;
     private final OutboxRepository outboxRepository;
 
     @Cacheable(value = "tasks", key = "#id")
@@ -63,16 +61,25 @@ public class TaskService {
                     @CacheEvict(value = "tasksList", allEntries = true)
             }
     )
-    public List<TaskResponseDto> findAll() {
-        return taskRepository.findAll()
-                .stream()
-                .map(taskMapper::toDto)
-                .toList();
+    public Page<TaskResponseDto> findAll(
+            int page,
+            int size,
+            String sortBy,
+            Sort.Direction direction
+    ) {
+
+        Pageable pageable = PageRequest.of(
+                page,
+                size,
+                Sort.by(direction, sortBy)
+        );
+
+        return taskRepository.findAll(pageable)
+                .map(taskMapper::toDto);
     }
 
     @Transactional
     @CacheEvict(value = "tasksList", allEntries = true)
-    @TransactionalEventListener(phase = AFTER_COMMIT)
     public TaskResponseDto createTask(TaskCreateDto dto) throws JsonProcessingException {
 
 
@@ -117,10 +124,8 @@ public class TaskService {
                 .aggregateType("TASK")
                 .aggregateId(savedTask.getId())
                 .eventType("TASK_CREATED")
-                .payload(
-                        objectMapper.writeValueAsString(event)
-                )
-                .createdAt(Instant.from(LocalDateTime.now()))
+                .payload(event)
+                .createdAt(Instant.now())
                 .build();
 
 
@@ -178,6 +183,14 @@ public class TaskService {
     public List<TaskResponseDto> findByStatus(TaskStatus status) {
 
         return taskRepository.findByTaskStatus(status)
+                .stream()
+                .map(taskMapper::toDto)
+                .toList();
+    }
+
+    public List<TaskResponseDto> findAllByUser(Long userId) {
+
+        return taskRepository.findAllByUser(userId)
                 .stream()
                 .map(taskMapper::toDto)
                 .toList();
