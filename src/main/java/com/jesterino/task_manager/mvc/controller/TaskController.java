@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.jesterino.task_manager.mvc.dto.task.TaskCreateDto;
 import com.jesterino.task_manager.mvc.dto.task.TaskResponseDto;
 import com.jesterino.task_manager.mvc.dto.task.TaskUpdateDto;
+import com.jesterino.task_manager.mvc.entity.NotificationType;
 import com.jesterino.task_manager.mvc.entity.TaskStatus;
 import com.jesterino.task_manager.mvc.service.TaskService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -66,10 +67,11 @@ public class TaskController {
     })
     @PostMapping
     public ResponseEntity<TaskResponseDto> create(
-            @Valid @RequestBody TaskCreateDto dto) throws JsonProcessingException {
+            @Valid @RequestBody TaskCreateDto dto,
+            @RequestParam NotificationType notificationType) throws JsonProcessingException {
 
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(taskService.createTask(dto));
+                .body(taskService.createTask(dto, notificationType));
     }
 
     @Operation(summary = "Обновить задачу")

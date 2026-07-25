@@ -1,6 +1,5 @@
 package com.jesterino.task_manager.mvc.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.jesterino.task_manager.exception.ResourceNotFoundException;
 import com.jesterino.task_manager.kafka.event.TaskCreatedEvent;
 import com.jesterino.task_manager.kafka.outbox.OutboxEvent;
@@ -8,10 +7,7 @@ import com.jesterino.task_manager.kafka.outbox.OutboxRepository;
 import com.jesterino.task_manager.mvc.dto.task.TaskCreateDto;
 import com.jesterino.task_manager.mvc.dto.task.TaskResponseDto;
 import com.jesterino.task_manager.mvc.dto.task.TaskUpdateDto;
-import com.jesterino.task_manager.mvc.entity.Category;
-import com.jesterino.task_manager.mvc.entity.Task;
-import com.jesterino.task_manager.mvc.entity.TaskStatus;
-import com.jesterino.task_manager.mvc.entity.User;
+import com.jesterino.task_manager.mvc.entity.*;
 import com.jesterino.task_manager.mvc.mapper.TaskMapper;
 import com.jesterino.task_manager.mvc.repository.CategoryRepository;
 import com.jesterino.task_manager.mvc.repository.TaskRepository;
@@ -43,6 +39,8 @@ public class TaskService {
     private final CategoryRepository categoryRepository;
     private final TaskMapper taskMapper;
     private final OutboxRepository outboxRepository;
+
+
 
     @Cacheable(value = "tasks", key = "#id")
     public TaskResponseDto findById(Long id) {
@@ -80,10 +78,10 @@ public class TaskService {
 
     @Transactional
     @CacheEvict(value = "tasksList", allEntries = true)
-    public TaskResponseDto createTask(TaskCreateDto dto) throws JsonProcessingException {
-
+    public TaskResponseDto createTask(TaskCreateDto dto, NotificationType notificationType) {
 
         log.info("Creating task '{}'", dto.title());
+        log.info("With notification type '{}'", notificationType);
 
 
         User user = userRepository.findById(dto.userId())
@@ -115,7 +113,8 @@ public class TaskService {
                 savedTask.getTitle(),
                 savedTask.getUser().getName(),
                 savedTask.getCategory().getCategoryName(),
-                savedTask.getTaskStatus().name()
+                savedTask.getTaskStatus().name(),
+                notificationType
         );
 
 
