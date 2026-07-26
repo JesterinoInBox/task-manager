@@ -1,6 +1,8 @@
+
 package com.jesterino.task_manager.kafka.outbox;
 
 import com.jesterino.task_manager.kafka.event.TaskCreatedEvent;
+import com.jesterino.task_manager.kafka.outbox.OutboxRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -14,7 +16,6 @@ public class OutboxPublisher {
 
 
     private final OutboxRepository repository;
-
     private final KafkaTemplate<String, TaskCreatedEvent> kafka;
 
     @Scheduled(fixedDelay = 5000)
