@@ -1,7 +1,7 @@
 services:
   application:
     volumes:
-      - ./logs:/var/log/taskmanager
+      - ./logs/task-manager:/var/log/taskmanager
     build:
       context: .
       dockerfile: Dockerfile
